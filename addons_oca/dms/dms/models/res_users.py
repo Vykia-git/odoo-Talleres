@@ -27,10 +27,10 @@ class ResUsers(models.Model):
             editor = self.env.ref('dms.group_dms_user')
             admin = self.env.ref('dms.group_dms_manager')
             groups = viewer | editor | admin
-            user.groups_id -= groups
+            user.group_ids -= groups
             if user.dms_role == 'viewer':
-                user.groups_id += viewer
+                user.group_ids += viewer
             elif user.dms_role == 'editor':
-                user.groups_id += editor
+                user.group_ids += editor
             elif user.dms_role == 'admin':
-                user.groups_id += admin
+                user.group_ids += admin
