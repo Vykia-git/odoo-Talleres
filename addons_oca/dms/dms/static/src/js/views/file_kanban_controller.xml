@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<templates>
+    <t
+        t-name="dms.FileKanbanView.Buttons"
+        t-inherit="web.KanbanView.Buttons"
+        t-inherit-mode="extension"
+    >
+        <xpath expr="." position="inside">
+            <input
+                type="file"
+                multiple="true"
+                t-ref="fileInput"
+                class="o_input_file o_hidden"
+                t-on-change.stop="onChangeFileInput"
+            />
+            <button
+                type="button"
+                t-attf-class="btn btn-primary o_file_kanban_upload"
+                t-on-click.stop.prevent="uploadDocument"
+            >
+                Upload
+            </button>
+        </xpath>
+    </t>
+</templates>

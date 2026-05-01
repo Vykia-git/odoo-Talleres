@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!--
+    Copyright 2024 Subteno - Timothée Vannier (https://www.subteno.com).
+    License LGPL-3.0 or later (http://www.gnu.org/licenses/lgpl).
+-->
+<templates xml:space="preserve">
+    <t
+        t-name="dms.KanbanRenderer"
+        t-inherit="web.KanbanRenderer"
+        t-inherit-mode="primary"
+    >
+        <xpath expr="//div[hasclass('o_kanban_renderer')]" position="before">
+            <div t-if="dragState.showDragZone" class="o_dropzone">
+                <i class="fa fa-cloud-upload fa-10x" />
+            </div>
+        </xpath>
+    </t>
+
+
+</templates>
