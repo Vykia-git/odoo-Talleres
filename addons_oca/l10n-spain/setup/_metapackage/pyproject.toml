@@ -1,0 +1,34 @@
+[project]
+name = "odoo-addons-oca-l10n-spain"
+version = "19.0.20260624.0"
+dependencies = [
+    "odoo-addon-delivery_dhl_parcel==19.0.*",
+    "odoo-addon-delivery_seur_atlas==19.0.*",
+    "odoo-addon-l10n_es_account_banking_sepa_fsdd==19.0.*",
+    "odoo-addon-l10n_es_account_statement_import_n43==19.0.*",
+    "odoo-addon-l10n_es_aeat==19.0.*",
+    "odoo-addon-l10n_es_aeat_mod111==19.0.*",
+    "odoo-addon-l10n_es_aeat_mod115==19.0.*",
+    "odoo-addon-l10n_es_aeat_mod123==19.0.*",
+    "odoo-addon-l10n_es_aeat_mod130==19.0.*",
+    "odoo-addon-l10n_es_aeat_mod190==19.0.*",
+    "odoo-addon-l10n_es_aeat_mod216==19.0.*",
+    "odoo-addon-l10n_es_aeat_mod296==19.0.*",
+    "odoo-addon-l10n_es_aeat_mod303==19.0.*",
+    "odoo-addon-l10n_es_aeat_mod347==19.0.*",
+    "odoo-addon-l10n_es_aeat_mod349==19.0.*",
+    "odoo-addon-l10n_es_aeat_mod390==19.0.*",
+    "odoo-addon-l10n_es_aeat_partner_check==19.0.*",
+    "odoo-addon-l10n_es_aeat_sii_oca==19.0.*",
+    "odoo-addon-l10n_es_facturae==19.0.*",
+    "odoo-addon-l10n_es_mis_report==19.0.*",
+    "odoo-addon-l10n_es_partner==19.0.*",
+    "odoo-addon-l10n_es_partner_mercantil==19.0.*",
+    "odoo-addon-l10n_es_toponyms==19.0.*",
+    "odoo-addon-l10n_es_vat_book==19.0.*",
+]
+classifiers=[
+    "Programming Language :: Python",
+    "Framework :: Odoo",
+    "Framework :: Odoo :: 19.0",
+]
