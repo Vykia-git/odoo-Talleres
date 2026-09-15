@@ -10,7 +10,15 @@
         and the dropdown for the user where can logout
         we had to disable the lef sidebar to keep our web_resposive toggle button working
         and to keep the user dropdown in its original place -->
-        <xpath expr="//t[@t-if='env.isSmall']" position="attributes">
+        <!-- PARCHE LOCAL (Vykia): Odoo 19 renombro la condicion de esta
+             plantilla de "env.isSmall" a "this.ui.isSmall". El xpath original
+             dejaba de encontrar el nodo y OWL abortaba el arranque del cliente
+             web (pantalla en blanco). Se aceptan ambas formas para seguir
+             siendo compatible con Odoo 18. -->
+        <xpath
+            expr="//t[@t-if='env.isSmall' or @t-if='this.ui.isSmall']"
+            position="attributes"
+        >
             <attribute name="t-if">false</attribute>
         </xpath>
         <!-- The kanban dropdown is replaced with the odoo default one
