@@ -13,3 +13,7 @@ sessions/
 # OS
 .DS_Store
 Thumbs.db
+
+# Secretos (ver .env.example y config/odoo.conf.example)
+.env
+config/odoo.conf

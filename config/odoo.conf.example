@@ -4,6 +4,10 @@ data_dir = /var/lib/odoo
 db_host = db
 db_port = 5432
 db_user = odoo
-db_password = odoo
-admin_passwd = $pbkdf2-sha512$600000$YcwZgxDC2JszRoixNsY4pw$aK/5nRXkC8Xok59Xc0yisTr/QjbSXH7OPxV9gTUK24B2S9CCtkCFDxx4X3bbLala5.vddU0P4E.Q60P3UfXTXQ
+; Debe coincidir con DB_PASSWORD de .env
+db_password = CAMBIAME
+; Master password de Odoo (gestor de bases de datos).
+; Se fija desde http://localhost:8069/web/database/manager
+; -> Set Master Password; Odoo escribe aqui el hash.
+admin_passwd = CAMBIAME
 

@@ -12,14 +12,14 @@ services:
       - ./addons_oca:/mnt/oca-addons
     environment:
       - HOST=db
-      - USER=odoo
-      - PASSWORD=odoo
+      - USER=${DB_USER}
+      - PASSWORD=${DB_PASSWORD}
   db:
     image: postgres:17
     environment:
       - POSTGRES_DB=postgres
-      - POSTGRES_PASSWORD=odoo
-      - POSTGRES_USER=odoo
+      - POSTGRES_PASSWORD=${DB_PASSWORD}
+      - POSTGRES_USER=${DB_USER}
     volumes:
       - postgres-data:/var/lib/postgresql/data
 

@@ -75,6 +75,24 @@ Cuando se te pida crear o integrar un módulo, entrega siempre:
 - `addons_oca/` → 20 repos OCA **vendorizados** (no submódulos), montado en `/mnt/oca-addons`
 - `config/odoo.conf` → `addons_path` ya incluye ambos
 
+### Secretos: fuera del control de versiones
+
+Ni `.env` ni `config/odoo.conf` se versionan. Lo que sí está en git son sus plantillas.
+Desde un clon limpio:
+
+```bash
+cp .env.example .env                        # DB_USER / DB_PASSWORD
+cp config/odoo.conf.example config/odoo.conf
+```
+
+Después, en `config/odoo.conf`, poner `db_password` **igual que** `DB_PASSWORD` de `.env`, y
+fijar el master password desde http://localhost:8069/web/database/manager → *Set Master
+Password* (Odoo escribe el hash él solo en el fichero).
+
+**Cuidado con `addons_path`:** vive en los dos ficheros. Al añadir un repo OCA hay que tocarlo
+en `config/odoo.conf` (tu copia local, la que usa Odoo) **y** en `config/odoo.conf.example`
+(la versionada, la que ve el que clona).
+
 ---
 
 ## 3. Arquitectura del código propio
