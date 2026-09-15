@@ -1,0 +1,180 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<!-- Copyright 2026 Vykia
+     License AGPL-3.0 or later (http://www.gnu.org/licenses/agpl). -->
+<odoo>
+
+    <template id="report_workshop_order_document">
+        <t t-call="web.external_layout">
+            <t t-set="doc" t-value="doc.with_context(lang=doc.partner_id.lang)" />
+            <div class="page">
+
+                <!-- Cabecera: nº de orden grande + QR.
+                     El QR se genera con la ruta core /report/barcode/ y
+                     codifica el nº de orden, para leerlo con el móvil. -->
+                <div class="row mb-4">
+                    <div class="col-8">
+                        <h2 class="mt-0">
+                            Orden de trabajo
+                            <span t-field="doc.name" class="fw-bold" />
+                        </h2>
+                        <div>
+                            Entrada:
+                            <span t-field="doc.date_in" t-options="{'widget': 'datetime'}" />
+                        </div>
+                        <div t-if="doc.date_out">
+                            Salida:
+                            <span t-field="doc.date_out" t-options="{'widget': 'datetime'}" />
+                        </div>
+                    </div>
+                    <div class="col-4 text-end">
+                        <img
+                            t-att-src="'/report/barcode/?barcode_type=QR&amp;value=%s&amp;width=180&amp;height=180' % doc.name"
+                            alt="QR"
+                            style="width:110px;height:110px;"
+                        />
+                    </div>
+                </div>
+
+                <!-- Bloques bien separados: vehículo y cliente -->
+                <div class="row mb-4">
+                    <div class="col-6">
+                        <div class="border rounded p-2 h-100">
+                            <strong class="text-uppercase small">Vehículo</strong>
+                            <h3 class="mt-1 mb-1" t-field="doc.license_plate" />
+                            <div t-if="doc.vehicle_brand or doc.vehicle_model">
+                                <span t-field="doc.vehicle_brand" />
+                                <span t-field="doc.vehicle_model" />
+                            </div>
+                            <div t-if="doc.vehicle_model_year or doc.vehicle_engine">
+                                <span
+                                    t-if="doc.vehicle_model_year"
+                                >Año: <span t-field="doc.vehicle_model_year" /></span>
+                                <span
+                                    t-if="doc.vehicle_model_year and doc.vehicle_engine"
+                                > · </span>
+                                <span
+                                    t-if="doc.vehicle_engine"
+                                >Motor: <span t-field="doc.vehicle_engine" /></span>
+                            </div>
+                            <div t-if="doc.km">
+                                Kilómetros: <span t-field="doc.km" />
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-6">
+                        <div class="border rounded p-2 h-100">
+                            <strong class="text-uppercase small">Cliente</strong>
+                            <div class="mt-1">
+                                <strong t-field="doc.partner_id.name" />
+                            </div>
+                            <div t-if="doc.phone">
+                                Teléfono: <span t-field="doc.phone" />
+                            </div>
+                            <div t-if="doc.dni">
+                                DNI / NIF: <span t-field="doc.dni" />
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Trabajos a realizar -->
+                <div class="mb-4">
+                    <strong class="text-uppercase small">Trabajos a realizar</strong>
+                    <div
+                        class="border rounded p-2 mt-1"
+                        style="min-height:100px;white-space:pre-wrap;"
+                        t-field="doc.work_description"
+                    />
+                </div>
+
+                <!-- Conceptos, solo si ya se han cargado -->
+                <div t-if="doc.line_ids" class="mb-4">
+                    <strong class="text-uppercase small">Conceptos</strong>
+                    <table class="table table-sm mt-1">
+                        <thead>
+                            <tr>
+                                <th>Descripción</th>
+                                <th class="text-end">Cant.</th>
+                                <th class="text-end">Precio</th>
+                                <th class="text-end">Subtotal</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr t-foreach="doc.line_ids" t-as="line">
+                                <td><span t-field="line.name" /></td>
+                                <td class="text-end"><span t-field="line.quantity" /></td>
+                                <td class="text-end"><span t-field="line.price_unit" /></td>
+                                <td class="text-end">
+                                    <span
+                                        t-field="line.price_subtotal"
+                                        t-options="{'widget': 'monetary', 'display_currency': doc.currency_id}"
+                                    />
+                                </td>
+                            </tr>
+                        </tbody>
+                    </table>
+                    <div class="row justify-content-end">
+                        <div class="col-4">
+                            <table class="table table-sm">
+                                <tr>
+                                    <td>Base imponible</td>
+                                    <td class="text-end">
+                                        <span
+                                            t-field="doc.amount_untaxed"
+                                            t-options="{'widget': 'monetary', 'display_currency': doc.currency_id}"
+                                        />
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td>Impuestos</td>
+                                    <td class="text-end">
+                                        <span
+                                            t-field="doc.amount_tax"
+                                            t-options="{'widget': 'monetary', 'display_currency': doc.currency_id}"
+                                        />
+                                    </td>
+                                </tr>
+                                <tr class="fw-bold border-top">
+                                    <td>Total</td>
+                                    <td class="text-end">
+                                        <span
+                                            t-field="doc.amount_total"
+                                            t-options="{'widget': 'monetary', 'display_currency': doc.currency_id}"
+                                        />
+                                    </td>
+                                </tr>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Conformidad del cliente -->
+                <div class="row mt-5">
+                    <div class="col-6">
+                        <div style="border-top:1px solid #000;padding-top:4px;">
+                            Firma del cliente
+                        </div>
+                    </div>
+                    <div class="col-6">
+                        <div style="border-top:1px solid #000;padding-top:4px;">
+                            Taller
+                        </div>
+                    </div>
+                </div>
+
+            </div>
+        </t>
+    </template>
+
+    <template id="report_workshop_order">
+        <t t-call="web.html_container">
+            <t t-foreach="docs" t-as="doc">
+                <t
+                    t-call="workshop_management.report_workshop_order_document"
+                    t-lang="doc.partner_id.lang"
+                />
+            </t>
+        </t>
+    </template>
+
+</odoo>

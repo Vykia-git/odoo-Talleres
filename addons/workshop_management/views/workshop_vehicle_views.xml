@@ -1,0 +1,108 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<!-- Copyright 2026 Vykia
+     License AGPL-3.0 or later (http://www.gnu.org/licenses/agpl). -->
+<odoo>
+
+    <record id="workshop_vehicle_view_list" model="ir.ui.view">
+        <field name="name">workshop.vehicle.list</field>
+        <field name="model">workshop.vehicle</field>
+        <field name="arch" type="xml">
+            <list string="Vehículos">
+                <field name="license_plate" />
+                <field name="brand" />
+                <field name="model" />
+                <field name="model_year" string="Año" />
+                <field name="engine" />
+                <field name="partner_id" />
+                <field name="order_count" string="Visitas" />
+                <field name="company_id" groups="base.group_multi_company" optional="hide" />
+            </list>
+        </field>
+    </record>
+
+    <record id="workshop_vehicle_view_form" model="ir.ui.view">
+        <field name="name">workshop.vehicle.form</field>
+        <field name="model">workshop.vehicle</field>
+        <field name="arch" type="xml">
+            <form string="Vehículo">
+                <sheet>
+                    <div class="oe_button_box" name="button_box">
+                        <button
+                            name="action_view_orders"
+                            type="object"
+                            class="oe_stat_button"
+                            icon="fa-wrench"
+                        >
+                            <field name="order_count" widget="statinfo" string="Visitas" />
+                        </button>
+                    </div>
+                    <widget
+                        name="web_ribbon"
+                        title="Archivado"
+                        bg_color="text-bg-danger"
+                        invisible="active"
+                    />
+                    <div class="oe_title">
+                        <label for="license_plate" string="Matrícula" />
+                        <h1>
+                            <field name="license_plate" placeholder="1234ABC" />
+                        </h1>
+                    </div>
+                    <group>
+                        <group>
+                            <field name="brand" />
+                            <field name="model" />
+                            <field name="model_year" placeholder="2014" />
+                            <field name="engine" placeholder="1.5 dCi K9K" />
+                        </group>
+                        <group>
+                            <field name="partner_id" />
+                            <field name="active" invisible="1" />
+                            <field
+                                name="company_id"
+                                groups="base.group_multi_company"
+                                options="{'no_create': True}"
+                            />
+                        </group>
+                    </group>
+                    <group string="Observaciones">
+                        <field name="note" nolabel="1" />
+                    </group>
+                </sheet>
+            </form>
+        </field>
+    </record>
+
+    <record id="workshop_vehicle_view_search" model="ir.ui.view">
+        <field name="name">workshop.vehicle.search</field>
+        <field name="model">workshop.vehicle</field>
+        <field name="arch" type="xml">
+            <search string="Buscar vehículos">
+                <field name="license_plate" />
+                <field name="brand" />
+                <field name="model" />
+                <field name="engine" string="Motor" />
+                <field name="partner_id" />
+                <filter
+                    name="filter_archived"
+                    string="Archivados"
+                    domain="[('active', '=', False)]"
+                />
+            </search>
+        </field>
+    </record>
+
+    <record id="workshop_vehicle_action" model="ir.actions.act_window">
+        <field name="name">Vehículos</field>
+        <field name="res_model">workshop.vehicle</field>
+        <field name="view_mode">list,form</field>
+        <field name="help" type="html">
+            <p class="o_view_nocontent_smiling_face">Aún no hay vehículos</p>
+            <p>
+                Los vehículos se crean solos al registrar un ingreso. Esta
+                pantalla sirve para consultar el historial de un coche.
+            </p>
+        </field>
+    </record>
+
+</odoo>

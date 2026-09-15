@@ -1,0 +1,105 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<!-- Copyright 2026 Vykia
+     License AGPL-3.0 or later (http://www.gnu.org/licenses/agpl).
+
+     Catálogo inicial de servicios de taller.
+
+     Son productos ordinarios (product.template): solo autocompletan
+     descripción, precio e impuestos en la línea de la orden. No generan
+     stock (el módulo no depende de `stock`).
+
+     Los impuestos NO se fijan aquí: `taxes_id` toma por defecto el impuesto
+     de venta de la compañía (IVA 21 % en la compañía española), así que el
+     dato es válido en cualquier país sin referenciar xmlids fiscales.
+
+     noupdate="1": los precios son orientativos y el cliente los ajustará;
+     una actualización del módulo no debe pisárselos. -->
+<odoo>
+    <data noupdate="1">
+
+        <record id="product_labour_hour" model="product.template">
+            <field name="name">Mano de obra (hora)</field>
+            <field name="default_code">MO</field>
+            <field name="type">service</field>
+            <field name="list_price">45.00</field>
+            <field name="purchase_ok" eval="False" />
+            <field
+                name="description_sale"
+            >Mano de obra de taller. Indicar en «Cant.» las horas empleadas.</field>
+        </record>
+
+        <record id="product_diagnosis" model="product.template">
+            <field name="name">Diagnóstico electrónico</field>
+            <field name="default_code">DIAG</field>
+            <field name="type">service</field>
+            <field name="list_price">35.00</field>
+            <field name="purchase_ok" eval="False" />
+            <field
+                name="description_sale"
+            >Lectura de centralita y borrado de averías.</field>
+        </record>
+
+        <record id="product_oil_change" model="product.template">
+            <field name="name">Cambio de aceite y filtro</field>
+            <field name="default_code">ACE</field>
+            <field name="type">service</field>
+            <field name="list_price">60.00</field>
+            <field name="purchase_ok" eval="False" />
+        </record>
+
+        <record id="product_brakes" model="product.template">
+            <field name="name">Sustitución de pastillas de freno (eje)</field>
+            <field name="default_code">FRE</field>
+            <field name="type">service</field>
+            <field name="list_price">50.00</field>
+            <field name="purchase_ok" eval="False" />
+        </record>
+
+        <record id="product_tyre_fitting" model="product.template">
+            <field name="name">Montaje y equilibrado de neumático</field>
+            <field name="default_code">NEU</field>
+            <field name="type">service</field>
+            <field name="list_price">15.00</field>
+            <field name="purchase_ok" eval="False" />
+            <field name="description_sale">Precio por rueda.</field>
+        </record>
+
+        <record id="product_alignment" model="product.template">
+            <field name="name">Alineación de dirección</field>
+            <field name="default_code">ALI</field>
+            <field name="type">service</field>
+            <field name="list_price">45.00</field>
+            <field name="purchase_ok" eval="False" />
+        </record>
+
+        <record id="product_pre_itv" model="product.template">
+            <field name="name">Revisión pre-ITV</field>
+            <field name="default_code">ITV</field>
+            <field name="type">service</field>
+            <field name="list_price">40.00</field>
+            <field name="purchase_ok" eval="False" />
+        </record>
+
+        <record id="product_itv_management" model="product.template">
+            <field name="name">Gestión y traslado a ITV</field>
+            <field name="default_code">ITVG</field>
+            <field name="type">service</field>
+            <field name="list_price">30.00</field>
+            <field name="purchase_ok" eval="False" />
+        </record>
+
+        <!-- Repuestos: se teclean a mano en la línea (marca, referencia y
+             precio cambian en cada intervención). Este producto cubre el
+             cargo fijo de consumibles que no se desglosan. -->
+        <record id="product_workshop_supplies" model="product.template">
+            <field name="name">Material y consumibles de taller</field>
+            <field name="default_code">CONS</field>
+            <field name="type">consu</field>
+            <field name="list_price">6.00</field>
+            <field
+                name="description_sale"
+            >Grasas, limpiadores, bridas y pequeño material.</field>
+        </record>
+
+    </data>
+</odoo>

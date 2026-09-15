@@ -1,0 +1,77 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<!-- Copyright 2026 Vykia
+     License AGPL-3.0 or later (http://www.gnu.org/licenses/agpl).
+
+     Estructura de menú deliberadamente plana y corta: 3 secciones visibles.
+     Requisito del cliente: "secciones claramente diferenciadas y accesibles"
+     con curva de aprendizaje mínima. -->
+<odoo>
+
+    <menuitem
+        id="menu_workshop_root"
+        name="Taller"
+        web_icon="workshop_management,static/description/icon.png"
+        sequence="15"
+        groups="workshop_management.group_workshop_user"
+    />
+
+    <!-- 1. ÓRDENES DE TRABAJO -->
+    <menuitem
+        id="menu_workshop_orders"
+        name="Órdenes de trabajo"
+        parent="menu_workshop_root"
+        sequence="10"
+    />
+    <menuitem
+        id="menu_workshop_order_open"
+        name="Coches en el taller"
+        parent="menu_workshop_orders"
+        action="workshop_order_action_open"
+        sequence="10"
+    />
+    <menuitem
+        id="menu_workshop_order_all"
+        name="Historial de órdenes"
+        parent="menu_workshop_orders"
+        action="workshop_order_action_all"
+        sequence="20"
+    />
+
+    <!-- 2. FACTURACIÓN -->
+    <menuitem
+        id="menu_workshop_invoicing"
+        name="Facturación"
+        parent="menu_workshop_root"
+        sequence="20"
+    />
+    <menuitem
+        id="menu_workshop_invoices"
+        name="Facturas del taller"
+        parent="menu_workshop_invoicing"
+        action="workshop_invoice_action"
+        sequence="10"
+    />
+
+    <!-- 3. FICHAS -->
+    <menuitem
+        id="menu_workshop_records"
+        name="Fichas"
+        parent="menu_workshop_root"
+        sequence="30"
+    />
+    <menuitem
+        id="menu_workshop_partners"
+        name="Clientes"
+        parent="menu_workshop_records"
+        action="workshop_partner_action"
+        sequence="10"
+    />
+    <menuitem
+        id="menu_workshop_vehicles"
+        name="Vehículos"
+        parent="menu_workshop_records"
+        action="workshop_vehicle_action"
+        sequence="20"
+    />
+
+</odoo>

@@ -1,0 +1,326 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<!-- Copyright 2026 Vykia
+     License AGPL-3.0 or later (http://www.gnu.org/licenses/agpl). -->
+<odoo>
+
+    <!-- ============================== LISTA ============================== -->
+    <record id="workshop_order_view_list" model="ir.ui.view">
+        <field name="name">workshop.order.list</field>
+        <field name="model">workshop.order</field>
+        <field name="arch" type="xml">
+            <list
+                string="Órdenes de trabajo"
+                decoration-muted="state == 'cancel'"
+                decoration-success="state == 'done'"
+            >
+                <field name="name" string="Nº orden" />
+                <field name="license_plate" />
+                <field name="partner_id" string="Cliente" />
+                <field name="phone" optional="show" widget="phone" />
+                <field name="date_in" />
+                <field name="date_out" optional="hide" />
+                <field name="amount_total" sum="Total" optional="hide" />
+                <field name="invoice_count" string="Facturas" optional="hide" />
+                <field name="state" widget="badge" decoration-info="state == 'open'" />
+                <field name="company_id" groups="base.group_multi_company" optional="hide" />
+            </list>
+        </field>
+    </record>
+
+    <!-- ============================== KANBAN =============================
+         Tablero visual de "coches que están ahora en el taller".
+         Es la vista por defecto: de un vistazo se ve el estado del taller. -->
+    <record id="workshop_order_view_kanban" model="ir.ui.view">
+        <field name="name">workshop.order.kanban</field>
+        <field name="model">workshop.order</field>
+        <field name="arch" type="xml">
+            <kanban default_group_by="state" quick_create="false">
+                <field name="state" />
+                <templates>
+                    <t t-name="card">
+                        <div class="row">
+                            <div class="col-8">
+                                <strong class="fs-5">
+                                    <field name="license_plate" />
+                                </strong>
+                            </div>
+                            <div class="col-4 text-end text-muted">
+                                <field name="name" />
+                            </div>
+                        </div>
+                        <div class="text-muted">
+                            <field name="partner_id" />
+                        </div>
+                        <div class="text-muted">
+                            <field name="phone" widget="phone" />
+                        </div>
+                        <div class="mt-2">
+                            <field name="work_description" class="text-truncate d-block" />
+                        </div>
+                        <footer class="pt-2">
+                            <field name="date_in" widget="date" class="text-muted" />
+                            <div class="ms-auto">
+                                <field name="activity_ids" widget="kanban_activity" />
+                            </div>
+                        </footer>
+                    </t>
+                </templates>
+            </kanban>
+        </field>
+    </record>
+
+    <!-- =============================== FORM =============================== -->
+    <record id="workshop_order_view_form" model="ir.ui.view">
+        <field name="name">workshop.order.form</field>
+        <field name="model">workshop.order</field>
+        <field name="arch" type="xml">
+            <form string="Orden de trabajo">
+                <header>
+                    <button
+                        name="action_close"
+                        string="Cerrar orden (el coche sale)"
+                        type="object"
+                        class="btn-primary"
+                        invisible="state != 'open'"
+                    />
+                    <button
+                        name="action_create_invoice"
+                        string="Crear factura"
+                        type="object"
+                        class="btn-primary"
+                        invisible="state == 'cancel' or invoice_count > 0"
+                    />
+                    <button
+                        name="action_print"
+                        string="Imprimir orden"
+                        type="object"
+                        invisible="state == 'cancel'"
+                    />
+                    <button
+                        name="action_reopen"
+                        string="Reabrir"
+                        type="object"
+                        invisible="state != 'done'"
+                    />
+                    <button
+                        name="action_cancel"
+                        string="Anular"
+                        type="object"
+                        groups="workshop_management.group_workshop_manager"
+                        invisible="state == 'cancel'"
+                    />
+                    <field
+                        name="state"
+                        widget="statusbar"
+                        statusbar_visible="open,done"
+                    />
+                </header>
+                <sheet>
+                    <div class="oe_button_box" name="button_box">
+                        <button
+                            name="action_view_invoices"
+                            type="object"
+                            class="oe_stat_button"
+                            icon="fa-pencil-square-o"
+                            invisible="invoice_count == 0"
+                        >
+                            <field
+                                name="invoice_count"
+                                widget="statinfo"
+                                string="Facturas"
+                            />
+                        </button>
+                    </div>
+                    <widget
+                        name="web_ribbon"
+                        title="Anulada"
+                        bg_color="text-bg-danger"
+                        invisible="state != 'cancel'"
+                    />
+                    <div class="oe_title">
+                        <label for="name" string="Orden nº" />
+                        <h1>
+                            <field name="name" readonly="1" />
+                        </h1>
+                    </div>
+
+                    <group>
+                        <group string="Vehículo" name="vehicle">
+                            <field
+                                name="license_plate"
+                                placeholder="1234ABC"
+                                class="fw-bold"
+                            />
+                            <field name="vehicle_brand" placeholder="Renault" />
+                            <field name="vehicle_model" placeholder="Clio" />
+                            <field name="vehicle_model_year" placeholder="2014" />
+                            <field
+                                name="vehicle_engine"
+                                placeholder="1.5 dCi K9K"
+                            />
+                            <field name="km" />
+                            <field
+                                name="vehicle_order_count"
+                                invisible="vehicle_order_count &lt; 2"
+                                help="Veces que este coche ha pasado por el taller."
+                            />
+                            <field name="vehicle_id" invisible="1" />
+                        </group>
+                        <group string="Cliente" name="customer">
+                            <field
+                                name="partner_id"
+                                placeholder="Nombre y apellidos"
+                                options="{'no_open': True}"
+                            />
+                            <field name="phone" widget="phone" placeholder="600 000 000" />
+                            <field name="dni" placeholder="12345678Z" />
+                        </group>
+                    </group>
+                    <group>
+                        <group string="Entrada y salida" name="dates">
+                            <field name="date_in" />
+                            <field name="date_out" invisible="state != 'done'" />
+                        </group>
+                        <group name="company" groups="base.group_multi_company">
+                            <field name="company_id" options="{'no_create': True}" />
+                        </group>
+                    </group>
+
+                    <notebook>
+                        <page string="Trabajos a realizar" name="works">
+                            <field
+                                name="work_description"
+                                nolabel="1"
+                                placeholder="Describe aquí lo que hay que hacerle al coche: ruido en el tren delantero, cambio de aceite y filtros, revisión de frenos..."
+                            />
+                        </page>
+                        <page string="Conceptos a facturar" name="lines">
+                            <field name="line_ids" nolabel="1">
+                                <list editable="bottom">
+                                    <field name="sequence" widget="handle" />
+                                    <field
+                                        name="product_id"
+                                        optional="show"
+                                        options="{'no_create_edit': True}"
+                                    />
+                                    <field name="name" string="Descripción" />
+                                    <field name="quantity" string="Cant." />
+                                    <field name="price_unit" string="Precio" />
+                                    <field
+                                        name="tax_ids"
+                                        widget="many2many_tags"
+                                        optional="show"
+                                    />
+                                    <field name="price_subtotal" string="Subtotal" />
+                                    <field name="company_id" column_invisible="True" />
+                                    <field name="currency_id" column_invisible="True" />
+                                </list>
+                            </field>
+                            <group class="oe_subtotal_footer oe_right">
+                                <field name="amount_untaxed" />
+                                <field name="amount_tax" />
+                                <div class="oe_subtotal_footer_separator o_td_label">
+                                    <label for="amount_total" />
+                                </div>
+                                <field
+                                    name="amount_total"
+                                    nolabel="1"
+                                    class="oe_subtotal_footer_separator"
+                                />
+                            </group>
+                            <field name="currency_id" invisible="1" />
+                        </page>
+                    </notebook>
+                </sheet>
+                <chatter />
+            </form>
+        </field>
+    </record>
+
+    <!-- ============================== SEARCH ============================== -->
+    <record id="workshop_order_view_search" model="ir.ui.view">
+        <field name="name">workshop.order.search</field>
+        <field name="model">workshop.order</field>
+        <field name="arch" type="xml">
+            <search string="Buscar órdenes">
+                <field
+                    name="name"
+                    string="Nº de orden / matrícula"
+                    filter_domain="['|', ('name', 'ilike', self), ('license_plate', 'ilike', self)]"
+                />
+                <field name="license_plate" />
+                <field name="partner_id" string="Cliente" />
+                <field name="phone" />
+                <field name="work_description" string="Trabajos" />
+                <separator />
+                <filter
+                    name="filter_open"
+                    string="En el taller"
+                    domain="[('state', '=', 'open')]"
+                />
+                <filter
+                    name="filter_done"
+                    string="Salidos"
+                    domain="[('state', '=', 'done')]"
+                />
+                <!-- Se filtra por invoice_ids, no por invoice_count:
+                     el compute no esta almacenado y no es buscable. -->
+                <filter
+                    name="filter_not_invoiced"
+                    string="Sin facturar"
+                    domain="[('invoice_ids', '=', False), ('state', '!=', 'cancel')]"
+                />
+                <separator />
+                <filter
+                    name="filter_today"
+                    string="Entradas de hoy"
+                    domain="[('date_in', '&gt;=', datetime.datetime.combine(context_today(), datetime.time(0,0,0)))]"
+                />
+                <group>
+                    <filter
+                        name="groupby_state"
+                        string="Estado"
+                        context="{'group_by': 'state'}"
+                    />
+                    <filter
+                        name="groupby_partner"
+                        string="Cliente"
+                        context="{'group_by': 'partner_id'}"
+                    />
+                    <filter
+                        name="groupby_date_in"
+                        string="Fecha de entrada"
+                        context="{'group_by': 'date_in:day'}"
+                    />
+                </group>
+            </search>
+        </field>
+    </record>
+
+    <!-- ============================== ACCIONES ============================ -->
+
+    <!-- Órdenes activas: el listado de coches que están AHORA en el taller -->
+    <record id="workshop_order_action_open" model="ir.actions.act_window">
+        <field name="name">Coches en el taller</field>
+        <field name="res_model">workshop.order</field>
+        <field name="view_mode">kanban,list,form</field>
+        <field name="domain">[('state', '=', 'open')]</field>
+        <field name="context">{'search_default_filter_open': 1}</field>
+        <field name="help" type="html">
+            <p class="o_view_nocontent_smiling_face">Registra el primer ingreso</p>
+            <p>
+                Pulsa <b>Nuevo</b> para dar de alta un coche que entra hoy.
+                Solo necesitas la matrícula, el nombre de quien lo trae y los
+                trabajos a realizar.
+            </p>
+        </field>
+    </record>
+
+    <record id="workshop_order_action_all" model="ir.actions.act_window">
+        <field name="name">Historial de órdenes</field>
+        <field name="res_model">workshop.order</field>
+        <field name="view_mode">list,kanban,form</field>
+        <field name="context">{}</field>
+    </record>
+
+</odoo>

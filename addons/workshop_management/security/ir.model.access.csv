@@ -1,0 +1,7 @@
+id,name,model_id:id,group_id:id,perm_read,perm_write,perm_create,perm_unlink
+access_workshop_order_user,workshop.order user,model_workshop_order,group_workshop_user,1,1,1,0
+access_workshop_order_manager,workshop.order manager,model_workshop_order,group_workshop_manager,1,1,1,1
+access_workshop_order_line_user,workshop.order.line user,model_workshop_order_line,group_workshop_user,1,1,1,1
+access_workshop_order_line_manager,workshop.order.line manager,model_workshop_order_line,group_workshop_manager,1,1,1,1
+access_workshop_vehicle_user,workshop.vehicle user,model_workshop_vehicle,group_workshop_user,1,1,1,0
+access_workshop_vehicle_manager,workshop.vehicle manager,model_workshop_vehicle,group_workshop_manager,1,1,1,1

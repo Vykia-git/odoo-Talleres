@@ -1,0 +1,49 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<!-- Copyright 2026 Vykia
+     License AGPL-3.0 or later (http://www.gnu.org/licenses/agpl). -->
+<odoo>
+
+    <!-- Herencia limpia por xpath: no se reescribe la vista core -->
+    <record id="account_move_view_form_workshop" model="ir.ui.view">
+        <field name="name">account.move.form.workshop</field>
+        <field name="model">account.move</field>
+        <field name="inherit_id" ref="account.view_move_form" />
+        <field name="arch" type="xml">
+            <xpath expr="//field[@name='invoice_origin']" position="after">
+                <field
+                    name="workshop_order_id"
+                    invisible="not workshop_order_id"
+                    readonly="1"
+                />
+                <field
+                    name="workshop_license_plate"
+                    string="Matrícula"
+                    invisible="not workshop_order_id"
+                    readonly="1"
+                />
+            </xpath>
+        </field>
+    </record>
+
+    <!-- Acción de facturas filtrada a las generadas desde el taller.
+         Reutiliza la vista nativa de account: el usuario ve la factura
+         estándar, con su PDF y su botón "Enviar e imprimir". -->
+    <record id="workshop_invoice_action" model="ir.actions.act_window">
+        <field name="name">Facturas del taller</field>
+        <field name="res_model">account.move</field>
+        <field name="view_mode">list,form</field>
+        <field name="domain">[('workshop_order_id', '!=', False)]</field>
+        <field
+            name="context"
+        >{'default_move_type': 'out_invoice', 'search_default_posted': 0}</field>
+        <field name="help" type="html">
+            <p class="o_view_nocontent_smiling_face">Todavía no hay facturas</p>
+            <p>
+                Las facturas se crean desde la orden de trabajo, con el botón
+                <b>Crear factura</b>. Aquí aparecen todas para consultarlas,
+                imprimirlas o enviarlas por email.
+            </p>
+        </field>
+    </record>
+
+</odoo>
