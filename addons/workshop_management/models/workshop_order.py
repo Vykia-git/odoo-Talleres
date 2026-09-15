@@ -171,15 +171,56 @@ class WorkshopOrder(models.Model):
                     .next_by_code("workshop.order")
                     or NEW_PLACEHOLDER
                 )
+            # El vehiculo se resuelve ANTES del super(). Marca, modelo, ano y
+            # motor son campos related sobre vehicle_id y el ORM los escribe
+            # dentro del propio create(): si vehicle_id todavia no apunta a
+            # ningun registro, esos cuatro valores se pierden en silencio.
+            self._resolve_vehicle_vals(vals)
         orders = super().create(vals_list)
         orders._sync_vehicle()
         return orders
 
     def write(self, vals):
+        if vals.get("license_plate"):
+            # Mismo motivo que en create(): al cambiar de matricula, los
+            # campos related tienen que caer sobre el vehiculo nuevo y no
+            # sobre el que la orden tenia asignado hasta ahora.
+            for order in self:
+                vehicle = (
+                    self.env["workshop.vehicle"]
+                    .with_company(order.company_id)
+                    ._search_or_create(vals["license_plate"], order.partner_id)
+                )
+                if vehicle and order.vehicle_id != vehicle:
+                    order.vehicle_id = vehicle
         res = super().write(vals)
         if vals.get("license_plate"):
             self._sync_vehicle()
         return res
+
+    @api.model
+    def _resolve_vehicle_vals(self, vals):
+        """Rellena vehicle_id en los vals antes de crear la orden."""
+        if not vals.get("license_plate") or vals.get("vehicle_id"):
+            return
+        company = (
+            self.env["res.company"].browse(vals["company_id"])
+            if vals.get("company_id")
+            else self.env.company
+        )
+        partner = (
+            self.env["res.partner"].browse(vals["partner_id"])
+            if vals.get("partner_id")
+            else None
+        )
+        vehicle = (
+            self.env["workshop.vehicle"]
+            .with_company(company)
+            ._search_or_create(vals["license_plate"], partner)
+        )
+        if vehicle:
+            vals["vehicle_id"] = vehicle.id
+            vals["license_plate"] = vehicle.license_plate
 
     def _sync_vehicle(self):
         """Enlaza (o crea) el vehiculo a partir de la matricula tecleada."""
