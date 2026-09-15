@@ -35,10 +35,20 @@
                     </div>
                 </div>
 
-                <!-- Bloques bien separados: vehículo y cliente -->
-                <div class="row mb-4">
-                    <div class="col-6">
-                        <div class="border rounded p-2 h-100">
+                <!-- Vehiculo y cliente.
+                     Se maqueta con TABLA y no con .row/.col + h-100: el PDF
+                     lo genera wkhtmltopdf, cuyo WebKit no soporta flexbox,
+                     asi que h-100 no iguala nada y cada recuadro queda de una
+                     altura. Las celdas de una fila de tabla si se estiran
+                     siempre a la altura de la fila. -->
+                <table
+                    class="w-100 mb-4"
+                    style="border-collapse:separate;border-spacing:10px 0;table-layout:fixed;"
+                >
+                    <tr>
+                        <td
+                            style="width:50%;vertical-align:top;border:1px solid #dee2e6;border-radius:.25rem;padding:.5rem;"
+                        >
                             <strong class="text-uppercase small">Vehículo</strong>
                             <h3 class="mt-1 mb-1" t-field="doc.license_plate" />
                             <div t-if="doc.vehicle_brand or doc.vehicle_model">
@@ -59,23 +69,21 @@
                             <div t-if="doc.km">
                                 Kilómetros: <span t-field="doc.km" />
                             </div>
-                        </div>
-                    </div>
-                    <div class="col-6">
-                        <div class="border rounded p-2 h-100">
+                        </td>
+                        <td
+                            style="width:50%;vertical-align:top;border:1px solid #dee2e6;border-radius:.25rem;padding:.5rem;"
+                        >
                             <strong class="text-uppercase small">Cliente</strong>
-                            <div class="mt-1">
-                                <strong t-field="doc.partner_id.name" />
-                            </div>
+                            <h3 class="mt-1 mb-1" t-field="doc.partner_id.name" />
                             <div t-if="doc.phone">
                                 Teléfono: <span t-field="doc.phone" />
                             </div>
                             <div t-if="doc.dni">
                                 DNI / NIF: <span t-field="doc.dni" />
                             </div>
-                        </div>
-                    </div>
-                </div>
+                        </td>
+                    </tr>
+                </table>
 
                 <!-- Trabajos a realizar -->
                 <div class="mb-4">
