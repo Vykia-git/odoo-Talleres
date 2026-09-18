@@ -10,6 +10,7 @@ services:
       - ./config:/etc/odoo
       - ./addons:/mnt/extra-addons
       - ./addons_oca:/mnt/oca-addons
+      - ./addons_third:/mnt/third-addons
     environment:
       - HOST=db
       - USER=${DB_USER}
