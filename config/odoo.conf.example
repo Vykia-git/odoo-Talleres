@@ -11,3 +11,11 @@ db_password = CAMBIAME
 ; -> Set Master Password; Odoo escribe aqui el hash.
 admin_passwd = CAMBIAME
 
+
+; El configurador de sitio web encadena dos recargas de registry (tema +
+; modulos de features) y varias llamadas IAP con timeout. Con los limites por
+; defecto (cpu 60 s / real 120 s) el worker muere a media faena y deja paginas
+; duplicadas y la home vacia.
+limit_time_cpu = 600
+limit_time_real = 1200
+limit_time_real_cron = 1200
